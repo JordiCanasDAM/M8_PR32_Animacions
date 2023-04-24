@@ -34,7 +34,7 @@ public class Animacions extends ApplicationAdapter {
 
 		// Load the sprite sheet as a Texture
 		walkSheet = new Texture(Gdx.files.internal("animation_sheet.png"));
-		walkPrinceOfPersia = new Texture(Gdx.files.internal("PrinceOfPersia_Walking.png"));
+		walkPrinceOfPersia = new Texture(Gdx.files.internal("PrinceOfPersia_Walking-transparent.png"));
 
 		// Use the split utility method to create a 2D array of TextureRegions. This is
 		// possible because this sprite sheet contains frames of equal size and they are
