@@ -17,11 +17,14 @@ public class Animacions extends ApplicationAdapter {
 	Texture walkSheet;
 	Animation<TextureRegion> walkAnimation; // Must declare frame type (TextureRegion)
 
-
 	//Sprite afegit
 	Texture walkPrinceOfPersia;
 	Animation<TextureRegion> princeOfPersia;
+	float sX = 0;
+	float sY = 0;
+	int speed = 2;
 
+	//Common
 	SpriteBatch spriteBatch;
 
 	// A variable for tracking elapsed time for the animation
@@ -32,18 +35,25 @@ public class Animacions extends ApplicationAdapter {
 	@Override
 	public void create() {
 
+		//Initialize sprite pos
+		sX = Gdx.graphics.getWidth()/2;
+		sY = Gdx.graphics.getHeight()/2;
+
 		// Load the sprite sheet as a Texture
-		walkSheet = new Texture(Gdx.files.internal("animation_sheet.png"));
+		//walkSheet = new Texture(Gdx.files.internal("animation_sheet.png"));
 		walkPrinceOfPersia = new Texture(Gdx.files.internal("PrinceOfPersia_Walking-transparent.png"));
 
 		// Use the split utility method to create a 2D array of TextureRegions. This is
 		// possible because this sprite sheet contains frames of equal size and they are
 		// all aligned.
+		/*
 		TextureRegion[][] tmp = TextureRegion.split(walkSheet,
 				walkSheet.getWidth() / FRAME_COLS,
 				walkSheet.getHeight() / FRAME_ROWS);
+		 */
 		// Place the regions into a 1D array in the correct order, starting from the top
 		// left, going across first. The Animation constructor requires a 1D array.
+		/*
 		TextureRegion[] walkFrames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
 		int index = 0;
 		for (int i = 0; i < FRAME_ROWS; i++) {
@@ -51,7 +61,9 @@ public class Animacions extends ApplicationAdapter {
 				walkFrames[index++] = tmp[i][j];
 			}
 		}
+		*/
 
+		/*
 		TextureRegion animationFrames[] = new TextureRegion[16];
 		animationFrames[0] = new TextureRegion(walkPrinceOfPersia,0,0,13,53);
 		animationFrames[1] = new TextureRegion(walkPrinceOfPersia,24,0,34-24,53);
@@ -69,15 +81,24 @@ public class Animacions extends ApplicationAdapter {
 		animationFrames[13] = new TextureRegion(walkPrinceOfPersia,392,0,427-392,53);
 		animationFrames[14] = new TextureRegion(walkPrinceOfPersia,439,0,467-439,53);
 		animationFrames[15] = new TextureRegion(walkPrinceOfPersia,480,0,500-480,53);
+		 */
 
+		TextureRegion animationFrames[] = new TextureRegion[8];
+		animationFrames[0] = new TextureRegion(walkPrinceOfPersia,216,0,239-216,53);
+		animationFrames[1] = new TextureRegion(walkPrinceOfPersia,247,0,281-247,53);
+		animationFrames[2] = new TextureRegion(walkPrinceOfPersia,287,0,316-287,53);
+		animationFrames[3] = new TextureRegion(walkPrinceOfPersia,327,0,353-327,53);
+		animationFrames[4] = new TextureRegion(walkPrinceOfPersia,359,0,385-359,53);
+		animationFrames[5] = new TextureRegion(walkPrinceOfPersia,392,0,427-392,53);
+		animationFrames[6] = new TextureRegion(walkPrinceOfPersia,439,0,467-439,53);
+		animationFrames[7] = new TextureRegion(walkPrinceOfPersia,480,0,500-480,53);
 
 		// Initialize the Animation with the frame interval and array of frames
-		walkAnimation = new Animation<TextureRegion>(0.025f, walkFrames);
+		//walkAnimation = new Animation<TextureRegion>(0.025f, walkFrames);
 		princeOfPersia = new Animation<TextureRegion>(0.1f,animationFrames);
 
 
-		// Instantiate a SpriteBatch for drawing and reset the elapsed animation
-		// time to 0
+		// Instantiate a SpriteBatch for drawing and reset the elapsed animation time to 0
 		spriteBatch = new SpriteBatch();
 		stateTime = 0f;
 	}
@@ -87,12 +108,55 @@ public class Animacions extends ApplicationAdapter {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // Clear screen
 		stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time
 
+		// Get touchscreen input & set movement
+		if(Gdx.input.isTouched()){
+			if (Gdx.input.getX() < Gdx.graphics.getWidth()/3){
+				sX -= speed;
+				//Left
+				if (Gdx.input.getY() < Gdx.graphics.getHeight()/3){
+					//Up
+					sY += speed;
+				} else if (Gdx.input.getY() < Gdx.graphics.getHeight()/3*2){
+					//None
+				} else {
+					//Down
+					sY -= speed;
+				}
+
+			} else if (Gdx.input.getX() < Gdx.graphics.getWidth()/3*2) {
+				//None
+				if (Gdx.input.getY() < Gdx.graphics.getHeight()/3){
+					//Up
+					sY += speed;
+				} else if (Gdx.input.getY() < Gdx.graphics.getHeight()/3*2){
+					//None
+				} else {
+					//Down
+					sY -= speed;
+				}
+
+			} else {
+				sX += speed;
+				//Right
+				if (Gdx.input.getY() < Gdx.graphics.getHeight()/3){
+					//Up
+					sY += speed;
+				} else if (Gdx.input.getY() < Gdx.graphics.getHeight()/3*2){
+					//None
+				} else {
+					//Down
+					sY -= speed;
+				}
+
+			}
+		}
+
 		// Get current frame of animation for the current stateTime
-		TextureRegion currentFrame = walkAnimation.getKeyFrame(stateTime, true);
+		//TextureRegion currentFrame = walkAnimation.getKeyFrame(stateTime, true);
 		TextureRegion spriteFrame = princeOfPersia.getKeyFrame(stateTime,true);
 		spriteBatch.begin();
-		spriteBatch.draw(currentFrame, 50, 50, 500, 500); // Draw current frame at (50, 50)
-		spriteBatch.draw(spriteFrame, 50, 50);
+		//spriteBatch.draw(currentFrame, 50, 50, 500, 500); // Draw current frame at (50, 50)
+		spriteBatch.draw(spriteFrame, sX, sY);
 		spriteBatch.end();
 	}
 
